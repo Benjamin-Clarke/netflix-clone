@@ -16,7 +16,13 @@ export default function Login() {
         formState: { errors } 
     } = useForm<Inputs>();
     
-    const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+    const onSubmit: SubmitHandler<Inputs> = async ({email, password}) => {
+        if(login) {
+            await signIn(email, password)
+        } else {
+            await signUp(email, password)
+        }
+    }
 
     return (
         <div className="relative flex h-screen w-screen flex-col bg-black
@@ -76,7 +82,10 @@ export default function Login() {
                     </label>
                 </div>
 
-                <button className="w-full rounded bg-[#e50914] py-3 font-semibold">
+                <button 
+                    className="w-full rounded bg-[#e50914] py-3 font-semibold"
+                    onClick={() => setLogin(true)}
+                >
                     Sign In
                 </button>
 
@@ -85,6 +94,7 @@ export default function Login() {
                     <button 
                         className="text-white hover:underline"
                         type="submit"
+                        onClick={() => setLogin(false)}
                     >
                         Sign up now
                     </button>
