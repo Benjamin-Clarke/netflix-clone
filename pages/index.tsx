@@ -1,6 +1,7 @@
 import Banner from '@/components/Banner'
 import Header from '@/components/Header'
 import Row from '@/components/Row'
+import useAuth from '@/hooks/useAuth'
 import { Movie } from '@/typings'
 import requests from '@/utils/requests'
 import Head from 'next/head'
@@ -26,6 +27,12 @@ export default function Home({
   romanceMovies,
   documentaries
 } : Props) {
+  const {logout, loading} = useAuth()
+
+  if (loading) return (
+    null
+  )
+
   return (
     <div className='relative h-screen bg-gradient-to-b
     from-gray-900/10 to-[#010511] lg:h-[140vh]'>
@@ -84,4 +91,4 @@ export const getServerSideProps = async () => {
       documentaries: documentaries.results,
     },
   }
-}
+} 

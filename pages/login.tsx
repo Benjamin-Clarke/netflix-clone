@@ -1,3 +1,4 @@
+import useAuth from "@/hooks/useAuth";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
@@ -10,6 +11,8 @@ interface Inputs {
 
 export default function Login() {
     const [login, setLogin] = useState(false)
+    const {signIn, signUp} = useAuth()
+
     const { 
         register, 
         handleSubmit, 

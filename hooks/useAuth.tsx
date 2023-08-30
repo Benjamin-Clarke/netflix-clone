@@ -36,7 +36,29 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [loading, setLoading] = useState(false)
     const [user, setUser] = useState<User | null>(null)
+    const [error, setError] = useState(null)
+    const [initialLoading, setInitialLoading] = useState(true)
     const router = useRouter()
+
+    // Persisting the user
+  useEffect(
+    () =>
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // Logged in...
+          setUser(user)
+          setLoading(false)
+        } else {
+          // Not logged in...
+          setUser(null)
+          setLoading(true)
+          router.push('/login')
+        }
+
+        setInitialLoading(false)
+      }),
+    [auth]
+  )
 
     const signUp = async (email: string, password: string) => {
         setLoading(true)
@@ -76,9 +98,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .finally(() => setLoading(false))
     }
 
+    const memoedValue = useMemo(() => ({
+        user, signUp, signIn, loading, logout, error
+    }), [user, loading])
+
     return (
-        <div>
-            Use Auth
-        </div>
+        <AuthContext.Provider value={memoedValue}>
+            {!initialLoading && children}
+        </AuthContext.Provider> 
     )
+}
+
+export default function useAuth() {
+    return useContext(AuthContext)
 }
