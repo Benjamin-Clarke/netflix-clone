@@ -1,10 +1,11 @@
 import { modalState, movieState } from "@/atoms/modalAtom"
-import { XMarkIcon } from "@heroicons/react/20/solid"
+import { PlusIcon, XMarkIcon } from "@heroicons/react/20/solid"
 import MuiModal from "@mui/material/Modal"
 import { useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { Element, Genre } from "@/typings"
 import ReactPlayer from "react-player/lazy"
+import { FaPlay } from "react-icons/fa"
 
 export default function Modal() {
     const [showModal, setShowModal] = useRecoilState(modalState)
@@ -27,7 +28,7 @@ export default function Modal() {
             if(data?.videos) {
                 const index = data.videos.results.findIndex(
                     (element: Element) => element.type === "Trailer")
-                setTrailer(data.video?.results[index]?.key)
+                setTrailer(data.videos?.results[index]?.key)
             }
             if(data?.genres) {
                 setGenres(data.genres)
@@ -42,7 +43,11 @@ export default function Modal() {
     }
 
     return (
-        <MuiModal open={showModal} onClose={handleClose}>
+        <MuiModal 
+            open={showModal} onClose={handleClose}
+            className="fixed !top-7 left-0 right-0 z-50 mx-auto w-full max-w-5xl
+            overflow-hidden overflow-y-scroll rounded-md scrollbar-hide"
+        >
             <>
                 <button 
                     onClick={handleClose}
@@ -52,15 +57,28 @@ export default function Modal() {
                     <XMarkIcon className="h-6 w-6" />
                 </button>
 
-                <div>
+                <div className="relative pt-[56.25%] ">
                     <ReactPlayer
                         url={`https://www.youtube.com/watch?v=${trailer}`}
                         width="100%"
                         height="100%"
                         style={{ position: 'absolute', top: '0', left: '0' }}
                         playing
-                        muted={muted}
+                        //muted={muted}
                     />
+                    <div className="absolute bottom-10 flex w-full items-center justify-between
+                    px-10">
+                        <div className="flex space-x-2">
+                            <button className="flex items-center gap-x-2 rounded bg-white px-8 text-xl
+                            font-bold text-black transition hover:bg-[#e6e6e6]">
+                                <FaPlay className="h-7 w-7 text-black"/>
+                                Play
+                            </button>
+                            <button>
+                                <PlusIcon/>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </>
         </MuiModal>
